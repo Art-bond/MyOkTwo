@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">MyOkTwo</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+
+
+    <string name="error">Error</string>
+    <string name="auth_cancelled">Authorization cancelled</string>
+
+    <string name="login">Login (try SSO, then client OAUTH)</string>
+    <string name="login_sso">Login via native SSO only</string>
+    <string name="login_oauth">Login via client OAUTH only</string>
+    <string name="call_users_get_current_user">Call users.getCurrentUser</string>
+    <string name="call_user_get_friends">Call users.getFriends</string>
+    <string name="post_widget">Post with posting widget</string>
+    <string name="app_invite_widget">Invite friends to app widget</string>
+    <string name="app_suggest_widget">Suggest app to friends widget</string>
+    <string name="clear_tokens">Clear tokens</string>
+    <string name="call_report_payment">Call sdk.reportPayment</string>
+    <string name="name_hint">Olga Smith</string>
+    <string name="age_hint">Age: 33</string>
+    <string name="city_hint">city: London</string>
+    <string name="loading_json">loading JSON</string>
+    <string name="profile_avatar">Profile Avatar</string>
+    <string name="to_group">to Group</string>
+    <string name="load_list">List loading</string>
+    <string name="group_list">User Group List</string>
+    <string name="example_group_name">group name</string>
+    <string name="today_stats">Today Stats:</string>
+    <string name="example_number">Members Now: 99000</string>
+    <string name="example_post">Post today: 9</string>
+    <string name="example_follower">Followers: 24</string>
+    <string name="avatar_hardcoded">Group Avatar</string>
+    <string name="posts">Posts: </string>
+    <string name="followers">New Members:</string>
+    <string name="hint_member_count">99000</string>
+</resources>

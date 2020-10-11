@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/login">
+
+    <fragment
+        android:id="@+id/login"
+        android:name="ru.d3st.myoktwo.login.Login"
+        android:label="login_fragment"
+        tools:layout="@layout/login_fragment" >
+        <action
+            android:id="@+id/action_login_to_profile"
+            app:destination="@id/profile" />
+    </fragment>
+    <fragment
+        android:id="@+id/detail"
+        android:name="ru.d3st.myoktwo.detail.Detail"
+        android:label="detail_fragment"
+        tools:layout="@layout/detail_fragment" >
+        <action
+            android:id="@+id/action_detail_to_overview"
+            app:destination="@id/overview" />
+    </fragment>
+    <fragment
+        android:id="@+id/profile"
+        android:name="ru.d3st.myoktwo.profile.Profile"
+        android:label="profile_fragment"
+        tools:layout="@layout/profile_fragment" >
+        <action
+            android:id="@+id/action_profile_to_overview"
+            app:destination="@id/overview" />
+        <argument
+            android:name="json_profile"
+            app:argType="string"
+            android:defaultValue="json loading" />
+    </fragment>
+    <fragment
+        android:id="@+id/overview"
+        android:name="ru.d3st.myoktwo.overview.Overview"
+        android:label="overview_fragment"
+        tools:layout="@layout/overview_fragment" >
+        <action
+            android:id="@+id/action_overview_to_detail"
+            app:destination="@id/detail" />
+    </fragment>
+</navigation>
