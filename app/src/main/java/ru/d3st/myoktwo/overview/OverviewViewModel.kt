@@ -6,6 +6,9 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import ru.d3st.myoktwo.network.*
 import ru.d3st.myoktwo.network.OkMyApi.adapterGroupStatsMoshi
+import ru.d3st.myoktwo.network.OkMyApi.getGroupInfo
+import ru.d3st.myoktwo.network.OkMyApi.getGroupStatToday
+import ru.d3st.myoktwo.network.OkMyApi.getStatTopics
 import ru.d3st.myoktwo.network.OkMyApi.ok
 import ru.ok.android.sdk.OkRequestMode
 
@@ -18,66 +21,15 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
     val groupOne: LiveData<List<MyGroup>>
         get() = _groupOne
 
+    private val _navigateToSelectedProperty = MutableLiveData<MyGroup>()
+    val navigateToSelectedProperty: LiveData<MyGroup>
+        get() = _navigateToSelectedProperty
+
 
 
     init {
         execute()
     }
-
-
-
-    //функция получения данных КОНКРЕТНОЙ группы по ID
-    private suspend fun getGroupStatToday(groupId: String): GroupStats =
-        withContext(Dispatchers.IO ) {
-            //cутки
-            val dayLongTime = 86400 * 1000
-            //вчера
-            val start_time: Long = System.currentTimeMillis() - dayLongTime
-            //сейчас
-            val end_time: Long = System.currentTimeMillis()
-
-            val mapGroupStat = mapOf(
-                "gid" to groupId,
-                "start_time" to start_time.toString(),
-                "end_time" to end_time.toString(),
-                "fields" to "members_count, members_diff, topic_opens"
-            )
-
-                val json = ok.request("group.getStatTrends",mapGroupStat,OkRequestMode.DEFAULT)
-                Log.i("jsonStats", "для группы $groupId - $json")
-                val jsonMoshi = adapterGroupStatsMoshi.fromJson(json.toString())
-
-            if (jsonMoshi != null) {
-                return@withContext jsonMoshi
-            }
-            return@withContext emptyList<GroupStats>().first()
-        }
-
-    //получение информации о списке групп
-    private suspend fun getGroupInfo(oneList: GroupUser.Group): GroupInfoItem =
-        withContext(Dispatchers.IO) {
-            //вынимаем данные id групп из общего листа с данными групп
-
-            //переводим массив в строку через запятую
-            val mapGroupInfo = mapOf(
-                "uids" to oneList.groupId,
-                "fields" to "NAME, PIC_AVATAR, MEMBERS_COUNT"
-            )
-            val methodGroupGetInfo = "group.getInfo"
-
-            val json = ok.request(methodGroupGetInfo, mapGroupInfo, OkRequestMode.DEFAULT)
-            Log.i("jsonstats", json.toString())
-
-            val moshiResult = OkMyApi.adapterGroupInfo.fromJson(json.toString())
-
-            if (moshiResult != null) {
-                return@withContext moshiResult.first()
-            }
-            return@withContext emptyList<GroupInfoItem>().first()
-        }
-
-
-
     fun execute() = viewModelScope.launch {
         onPreExecute()
         val result = doInBackground() // runs in background thread without blocking the Main Thread
@@ -94,16 +46,24 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
             var resultList:List<MyGroup> = emptyList()
             idGroups.forEach {
                 val id = it.groupId
-                val stats:GroupStats = getGroupStatToday(id)
+                val stats: GroupStats = getGroupStatToday(id)
                 val info:GroupInfoItem = getGroupInfo(it)
+                val posts:GroupPosts = getStatTopics(id)
+                val postCountToday = posts.topics.size
+
                 val name = info.name
                 val membersCount = info.membersCount
                 val picAvatar = info.picAvatar
-                val membersDiffToday = stats.membersDiff.first().value
-                val postToday =stats.topicOpens.first().value
+                val listMemberDiff = stats.membersDiff
+                var membersDiffToday:Int? = 0
+                if (listMemberDiff.isNotEmpty()){
+                    membersDiffToday = stats.membersDiff.first()?.value
+                }
+
+               // val postToday =stats.topicOpens.first().value
 
                 val one =
-                    MyGroup(id, name, membersCount, picAvatar, membersDiffToday, postToday)
+                    MyGroup(id, name, membersCount, picAvatar, membersDiffToday, postCountToday)
                 resultList = resultList.orEmpty() + one
                 Log.i("jsonstats", one.toString())
 
@@ -146,6 +106,13 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
         // hide progress
         _groupOne.value = result
         Log.i("jsonResult",_groupOne.value.toString())
+    }
+
+    fun displaySelectedGroup(group:MyGroup){
+        _navigateToSelectedProperty.value = group
+    }
+    fun displaySelectedGroupComplete(){
+        _navigateToSelectedProperty.value = null
     }
 
 }

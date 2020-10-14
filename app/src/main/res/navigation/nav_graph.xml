@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_detail_to_overview"
             app:destination="@id/overview" />
+        <argument
+            android:name="selected_group_id"
+            app:argType="ru.d3st.myoktwo.network.MyGroup" />
     </fragment>
     <fragment
         android:id="@+id/profile"

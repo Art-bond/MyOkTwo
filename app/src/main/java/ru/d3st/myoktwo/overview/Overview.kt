@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import ru.d3st.myoktwo.databinding.OverviewFragmentBinding
 
 class Overview : Fragment() {
@@ -25,7 +26,9 @@ class Overview : Fragment() {
         bind.lifecycleOwner  = this
         bind.listGroupDataViewModel = viewModel
 
-        val adapter = GroupListAdapter()
+        val adapter = GroupListAdapter(GroupListAdapter.OnClickListener {
+            viewModel.displaySelectedGroup(it)
+        })
         bind.rvGroupList.adapter = adapter
 
 /*        viewModel.groupList.observe(viewLifecycleOwner, {
@@ -36,6 +39,17 @@ class Overview : Fragment() {
         viewModel.groupOne.observe(viewLifecycleOwner,{
             it?.let {
                 adapter.submitList(it)
+            }
+        })
+        //наблюдаем за переходом во фрагмент деталей групп
+        viewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, {
+            //проверяем есть ли данные в группе
+            if (it != null){
+                //вызываем финдНавКонтроллер
+                this.findNavController().navigate(
+                    OverviewDirections.actionOverviewToDetail(it))
+                    //приводим пеерменную отвечающую за переход в исходное состояние
+                viewModel.displaySelectedGroupComplete()
             }
         })
 

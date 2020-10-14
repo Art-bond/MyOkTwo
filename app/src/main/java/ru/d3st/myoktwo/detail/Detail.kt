@@ -1,12 +1,15 @@
 package ru.d3st.myoktwo.detail
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ru.d3st.myoktwo.R
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
+import ru.d3st.myoktwo.databinding.DetailFragmentBinding
+import ru.d3st.myoktwo.network.MyGroup
 
 class Detail : Fragment() {
 
@@ -16,13 +19,24 @@ class Detail : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.detail_fragment, container, false)
+
+        val bind = DetailFragmentBinding.inflate(inflater,container,false)
+        //через фрагмент получаем доступ к приложению
+        val application = requireNotNull(activity).application
+        //получаем данные из предыдущего фрагмента
+        val selectedMyGroup = DetailArgs.fromBundle(arguments!!).selectedGroupId
+        //создаем экземпляр ViewModelFactory, для того чтобы поместить данные из предыдущего фрагмента в ВьюМодел этого фрагмента
+        val viewModelFactory = DetailViewModelFactory(selectedMyGroup, application)
+        //биндим ВМ
+        bind.detailDataViewModel = ViewModelProvider(this, viewModelFactory).get(DetailViewModel::class.java)
+        //для обновления экрана
+        bind.lifecycleOwner  = this
+
+        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+
+
+        return bind.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(DetailViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
 }

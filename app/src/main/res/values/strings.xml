@@ -41,4 +41,6 @@
     <string name="posts">Posts: </string>
     <string name="followers">New Members:</string>
     <string name="hint_member_count">99000</string>
+    <string name="desc_icon_group">its icon group</string>
+    <string name="test">TEST</string>
 </resources>

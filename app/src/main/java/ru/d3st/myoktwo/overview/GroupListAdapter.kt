@@ -9,11 +9,14 @@ import ru.d3st.myoktwo.databinding.ListItemGroupBinding
 
 import ru.d3st.myoktwo.network.MyGroup
 
-class GroupListAdapter : ListAdapter<MyGroup, GroupListAdapter.ViewHolder>(GroupListDiffCallback()) {
+class GroupListAdapter(val onClickListener: OnClickListener) : ListAdapter<MyGroup, GroupListAdapter.ViewHolder>(GroupListDiffCallback()) {
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(item)
+        }
         holder.bind(item)
     }
 
@@ -36,6 +39,9 @@ class GroupListAdapter : ListAdapter<MyGroup, GroupListAdapter.ViewHolder>(Group
             }
         }
     }
+    class OnClickListener( val clickListener: (group:MyGroup) -> Unit){
+        fun onClick(group: MyGroup) = clickListener(group)
+    }
 }
     class GroupListDiffCallback : DiffUtil.ItemCallback<MyGroup>() {
         override fun areItemsTheSame(oldItem: MyGroup, newItem: MyGroup): Boolean {
@@ -46,4 +52,5 @@ class GroupListAdapter : ListAdapter<MyGroup, GroupListAdapter.ViewHolder>(Group
             return oldItem == newItem
         }
     }
+
 
