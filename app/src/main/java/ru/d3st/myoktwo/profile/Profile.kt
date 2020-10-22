@@ -14,7 +14,7 @@ class Profile : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val bind = ProfileFragmentBinding.inflate(inflater, container, false)
         arguments?.let {
@@ -33,11 +33,10 @@ class Profile : Fragment() {
     }
 
 
-    private fun navigateToGroupList(){
+    private fun navigateToGroupList() {
         //действие
         val action =
-            ProfileDirections.
-            actionProfileToOverview()
+            ProfileDirections.actionProfileToOverview()
 
         view?.findNavController()?.navigate(action)
     }

@@ -38,6 +38,10 @@
         <activity android:name="ru.ok.android.sdk.OkPostingActivity" />
         <activity android:name="ru.ok.android.sdk.OkAppInviteActivity" />
         <activity android:name="ru.ok.android.sdk.OkAppSuggestActivity" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

@@ -8,6 +8,7 @@ import com.squareup.moshi.*
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -58,7 +59,7 @@ object OkMyApi {
 
     //адаптеры моши на все случаи жизни
     //адаптер для пользователя
-    val userMoshiAdapter = moshi.adapter(CurrentUser::class.java)
+    val adapterMoshiUser: JsonAdapter<CurrentUser> = moshi.adapter(CurrentUser::class.java)
 
     //адаптер для одной группы
     val adapterGroupMoshi = moshi.adapter(GroupUser::class.java)
@@ -130,7 +131,7 @@ object OkMyApi {
                 Log.i("jsonstats", json.toString())
 
 
-                return@withContext OkMyApi.adapterGroupInfo.fromJson(json.toString())!!.first()
+                return@withContext adapterGroupInfo.fromJson(json.toString())!!.first()
             } catch (e: Exception) {
                 Log.i("jsonGrInfo", e.toString())
                 return@withContext emptyList<GroupInfoItem>().first()
@@ -156,29 +157,28 @@ object OkMyApi {
             try {
                 val json = ok.request("group.getStatTrends", mapGroupStat, OkRequestMode.DEFAULT)
                 Log.i("jsonStats", "для группы $groupId - $json")
-                val resultMoshi =adapterGroupStatsMoshi.fromJson(json.toString())
+                val resultMoshi = adapterGroupStatsMoshi.fromJson(json.toString())
 
 
                 return@withContext resultMoshi!!
             } catch (e: Exception) {
                 Log.i("jsonErGrStat", "для группы $groupId $e")
-                    return@withContext emptyList<GroupStats>().first()
+                return@withContext emptyList<GroupStats>().first()
+
             }
         }
 
-    suspend fun getStatPeople(groupId: String):String =
-        withContext(Dispatchers.IO){
+    suspend fun getStatPeople(groupId: String, listener: OkListener) =
+        withContext(Dispatchers.IO) {
             val mapStatPeople = mapOf(
                 "gid" to groupId,
                 "fields" to "CITIES, COUNTRIES, DEMOGRAPHY_FEMALE, DEMOGRAPHY_MALE, REFERENCES"
-                )
-            try{
-            val json = ok.request("group.getStatPeople", mapStatPeople, OkRequestMode.DEFAULT)
-            json?.let { Log.i("jsonGetStatPeople", it) }
-            return@withContext json.toString()
-        }catch (e: Exception){
-            return@withContext e.toString()
-            }
+            )
+            ok.request("group.getStatPeople",
+                mapStatPeople,
+                OkRequestMode.DEFAULT,
+                listener
+            )
         }
 
 

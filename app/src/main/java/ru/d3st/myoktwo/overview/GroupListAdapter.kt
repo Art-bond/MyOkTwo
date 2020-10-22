@@ -9,7 +9,8 @@ import ru.d3st.myoktwo.databinding.ListItemGroupBinding
 
 import ru.d3st.myoktwo.network.MyGroup
 
-class GroupListAdapter(val onClickListener: OnClickListener) : ListAdapter<MyGroup, GroupListAdapter.ViewHolder>(GroupListDiffCallback()) {
+class GroupListAdapter(val onClickListener: OnClickListener) :
+    ListAdapter<MyGroup, GroupListAdapter.ViewHolder>(GroupListDiffCallback()) {
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -25,32 +26,35 @@ class GroupListAdapter(val onClickListener: OnClickListener) : ListAdapter<MyGro
     }
 
 
-    class ViewHolder private constructor(private val binding:ListItemGroupBinding):RecyclerView.ViewHolder(binding.root){
-        fun bind(item: MyGroup){
+    class ViewHolder private constructor(private val binding: ListItemGroupBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: MyGroup) {
             binding.group = item
             binding.executePendingBindings()
         }
 
-        companion object{
-            fun from(parent: ViewGroup):ViewHolder{
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemGroupBinding.inflate(layoutInflater,parent,false)
+                val binding = ListItemGroupBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }
     }
-    class OnClickListener( val clickListener: (group:MyGroup) -> Unit){
+
+    class OnClickListener(val clickListener: (group: MyGroup) -> Unit) {
         fun onClick(group: MyGroup) = clickListener(group)
     }
 }
-    class GroupListDiffCallback : DiffUtil.ItemCallback<MyGroup>() {
-        override fun areItemsTheSame(oldItem: MyGroup, newItem: MyGroup): Boolean {
-            return oldItem.groupId == newItem.groupId
-        }
 
-        override fun areContentsTheSame(oldItem: MyGroup, newItem: MyGroup): Boolean {
-            return oldItem == newItem
-        }
+class GroupListDiffCallback : DiffUtil.ItemCallback<MyGroup>() {
+    override fun areItemsTheSame(oldItem: MyGroup, newItem: MyGroup): Boolean {
+        return oldItem.groupId == newItem.groupId
     }
+
+    override fun areContentsTheSame(oldItem: MyGroup, newItem: MyGroup): Boolean {
+        return oldItem == newItem
+    }
+}
 
 

@@ -43,4 +43,8 @@
     <string name="hint_member_count">99000</string>
     <string name="desc_icon_group">its icon group</string>
     <string name="test">TEST</string>
+    <string name="group_reference">Group Reference</string>
+    <string name="loading_img">Loading</string>
+    <string name="sort_by_day_grow">by Day Grow</string>
+    <string name="sort_by_member">by Member</string>
 </resources>

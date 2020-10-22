@@ -31,35 +31,35 @@ class Login : Fragment() {
 
 
     private var _bind: LoginFragmentBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val bind get() = _bind!!
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
 
         //бинды вдул
         _bind = LoginFragmentBinding.inflate(inflater, container, false)
         val application = requireNotNull(this.activity).application
         //следим за жизненым циклом фрагмента
-        var viewModel: LoginViewModel  =ViewModelProvider(this).get(LoginViewModel::class.java)
+        var viewModel: LoginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
         bind.loginData = viewModel
         bind.lifecycleOwner = this
 
         //подключаем viewmodel
         bind.loginData
 
-      bind.sdkLoginAny.setOnClickListener {
+        bind.sdkLoginAny.setOnClickListener {
 
-          activity?.let { One ->
-              OkMyApi.ok.requestAuthorization(
-                  One,
-                  REDIRECT_URL, OkAuthType.ANY, OkScope.VALUABLE_ACCESS)
-          }
+            activity?.let { One ->
+                OkMyApi.ok.requestAuthorization(
+                    One,
+                    REDIRECT_URL, OkAuthType.ANY, OkScope.VALUABLE_ACCESS)
+            }
             val intent = Intent(activity, OkAuthActivity::class.java)
             intent.putExtra(PARAM_CLIENT_ID, APP_ID)
             intent.putExtra(PARAM_APP_KEY, APP_KEY)
@@ -70,23 +70,31 @@ class Login : Fragment() {
         }
 // NOTE: application should use just one of the login methods, ANY is preferable
         bind.sdkLoginSso.setOnClickListener {
-            OkMyApi.ok.requestAuthorization(requireActivity(), REDIRECT_URL, OkAuthType.NATIVE_SSO, OkScope.VALUABLE_ACCESS)
+            OkMyApi.ok.requestAuthorization(requireActivity(),
+                REDIRECT_URL,
+                OkAuthType.NATIVE_SSO,
+                OkScope.VALUABLE_ACCESS)
         }
         bind.sdkLoginOauth.setOnClickListener {
-            OkMyApi.ok.requestAuthorization(requireActivity(), REDIRECT_URL, OkAuthType.WEBVIEW_OAUTH, OkScope.VALUABLE_ACCESS)
+            OkMyApi.ok.requestAuthorization(requireActivity(),
+                REDIRECT_URL,
+                OkAuthType.WEBVIEW_OAUTH,
+                OkScope.VALUABLE_ACCESS)
         }
 
         bind.sdkGetCurrentuser.setOnClickListener {
-            OkMyApi.ok.requestAsync("users.getCurrentUser", listener = ContextOkListener(this.requireContext(),
-                onSuccess = { _, json -> toast("Get current user result: $json") },
-                onError = { _, err -> toast("Get current user failed: $err") }
-            ))
+            OkMyApi.ok.requestAsync("users.getCurrentUser",
+                listener = ContextOkListener(this.requireContext(),
+                    onSuccess = { _, json -> toast("Get current user result: $json") },
+                    onError = { _, err -> toast("Get current user failed: $err") }
+                ))
         }
         bind.sdkGetFriends.setOnClickListener {
-            OkMyApi.ok.requestAsync("friends.get", listener = ContextOkListener(this.requireContext(),
-                onSuccess = { _, json -> toast("Get user friends result: $json") },
-                onError = { _, err -> toast("Failed to get friends: $err") }
-            ))
+            OkMyApi.ok.requestAsync("friends.get",
+                listener = ContextOkListener(this.requireContext(),
+                    onSuccess = { _, json -> toast("Get user friends result: $json") },
+                    onError = { _, err -> toast("Failed to get friends: $err") }
+                ))
         }
         bind.sdkLogout.setOnClickListener {
             OkMyApi.ok.clearTokens()
@@ -108,9 +116,14 @@ class Login : Fragment() {
             OkMyApi.ok.performPosting(this.requireActivity(), json, false, null)
         }
         bind.sdkAppInvite.setOnClickListener { OkMyApi.ok.performAppInvite(this.requireActivity()) }
-        bind.sdkAppSuggest.setOnClickListener { OkMyApi.ok.performAppSuggest(this.requireActivity(), null) }
+        bind.sdkAppSuggest.setOnClickListener {
+            OkMyApi.ok.performAppSuggest(this.requireActivity(),
+                null)
+        }
         bind.sdkReportPayment.setOnClickListener {
-            OkMyApi.ok.reportPayment(Math.random().toString() + "", "6.28", Currency.getInstance("EUR"))
+            OkMyApi.ok.reportPayment(Math.random().toString() + "",
+                "6.28",
+                Currency.getInstance("EUR"))
         }
 
         OkMyApi.ok = OkMyApi.getOk(application)
@@ -137,28 +150,36 @@ class Login : Fragment() {
         when {
             Odnoklassniki.of(this.requireContext()).isActivityRequestOAuth(requestCode) -> {
                 // process OAUTH sign-in response
-                Odnoklassniki.of(this.requireContext()).onAuthActivityResult(requestCode, resultCode, data, ContextOkListener(this.requireContext(),
-                    onSuccess = { _, json ->
-                        try {
-                            toast(String.format("access_token: %s", json.getString("access_token")))
-                            //showAppData()
-                            navigateToProfile(json)
-                        } catch (e: JSONException) {
-                            toast("unable to parse login request ${e.message}")
-                        }
-                    },
-                    onError = { _, err -> toast(getString(R.string.error) + ": $err") },
-                    onCancel = { _, err -> toast(getString(R.string.auth_cancelled) + ": $err") }
-                ))
+                Odnoklassniki.of(this.requireContext()).onAuthActivityResult(requestCode,
+                    resultCode,
+                    data,
+                    ContextOkListener(this.requireContext(),
+                        onSuccess = { _, json ->
+                            try {
+                                toast(String.format("access_token: %s",
+                                    json.getString("access_token")))
+                                //showAppData()
+                                navigateToProfile(json)
+                            } catch (e: JSONException) {
+                                toast("unable to parse login request ${e.message}")
+                            }
+                        },
+                        onError = { _, err -> toast(getString(R.string.error) + ": $err") },
+                        onCancel = { _, err -> toast(getString(R.string.auth_cancelled) + ": $err") }
+                    ))
             }
             Odnoklassniki.of(this.requireContext()).isActivityRequestViral(requestCode) -> {
                 // process called viral widgets (suggest / invite / post)
-                Odnoklassniki.of(this.requireContext()).onActivityResultResult(requestCode, resultCode, data, ContextOkListener(this.requireContext(),
-                    onSuccess = { _, json -> toast(json.toString())
+                Odnoklassniki.of(this.requireContext()).onActivityResultResult(requestCode,
+                    resultCode,
+                    data,
+                    ContextOkListener(this.requireContext(),
+                        onSuccess = { _, json ->
+                            toast(json.toString())
 
-                    },
-                    onError = { _, err -> toast(getString(R.string.error) + ": $err") }
-                ))
+                        },
+                        onError = { _, err -> toast(getString(R.string.error) + ": $err") }
+                    ))
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
@@ -175,7 +196,8 @@ class Login : Fragment() {
         view?.findNavController()?.navigate(action)
     }
 
-    private fun toast(text: String) = Toast.makeText(this.requireContext(), text, Toast.LENGTH_LONG).show()
+    private fun toast(text: String) =
+        Toast.makeText(this.requireContext(), text, Toast.LENGTH_LONG).show()
 
 
 }

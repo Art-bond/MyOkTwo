@@ -8,13 +8,13 @@ import com.squareup.moshi.JsonClass
 data class GroupPosts(
     @Json(name = "has_more")
     val hasMore: Boolean, // false
-    val topics: List<Topic>
+    val topics: List<Topic>,
 ) {
     @JsonClass(generateAdapter = true)
     data class Topic(
         val id: String, // 152104418108797
         val engagement: Int, // 86
         @Json(name = "feedback_total")
-        val feedbackTotal: Int // 50
+        val feedbackTotal: Int, // 50
     )
 }

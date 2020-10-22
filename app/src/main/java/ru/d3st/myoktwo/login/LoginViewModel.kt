@@ -13,9 +13,7 @@ import ru.ok.android.sdk.util.OkAuthType
 import ru.ok.android.sdk.util.OkScope
 
 
-
 class LoginViewModel : ViewModel() {
-
 
 
     // The internal MutableLiveData String that stores the most recent response
@@ -24,7 +22,6 @@ class LoginViewModel : ViewModel() {
     // The external immutable LiveData for the response String
     val response: LiveData<String>
         get() = _response
-
 
 
 }

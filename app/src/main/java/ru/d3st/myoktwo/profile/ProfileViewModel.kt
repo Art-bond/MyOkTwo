@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 import ru.d3st.myoktwo.network.OkMyApi.ok
-import ru.d3st.myoktwo.network.OkMyApi.userMoshiAdapter
+import ru.d3st.myoktwo.network.OkMyApi.adapterMoshiUser
 
 import ru.ok.android.sdk.OkRequestMode
 
@@ -75,7 +75,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     // Runs on the Main(UI) Thread
     private fun onPostExecute(result: String) {
         // hide progress
-        val moshiUser = userMoshiAdapter.fromJson(result)
+        val moshiUser = adapterMoshiUser.fromJson(result)
 
         moshiUser?.let {
             _response.value = moshiUser.toString()
