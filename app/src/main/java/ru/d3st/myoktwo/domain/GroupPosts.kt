@@ -1,4 +1,4 @@
-package ru.d3st.myoktwo.network
+package ru.d3st.myoktwo.domain
 
 
 import com.squareup.moshi.Json

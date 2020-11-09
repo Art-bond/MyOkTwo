@@ -5,6 +5,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import ru.d3st.myoktwo.R
 import ru.d3st.myoktwo.databinding.OverviewFragmentBinding
 
@@ -35,9 +36,25 @@ class Overview : Fragment() {
         })
         bind.recyclerViewGroup.adapter = adapter
 
+/*        viewModel.groupList.observe(viewLifecycleOwner, Observer<List<MyGroup>> {
+            groups ->
+            groups?.apply {
+                adapter.submitList(this)
+            }
+        })*/
+
         viewModel.groupOne.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
+            }
+        })
+        viewModel.status.observe(viewLifecycleOwner, {
+            if (it == JsonStatus.DONE) { //если данные профиля загрузились покажет SnackBar
+                Snackbar.make(
+                    activity!!.findViewById(android.R.id.content),
+                    getString(R.string.list_loaded),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
         })
         //наблюдаем за переходом во фрагмент деталей групп
@@ -64,7 +81,7 @@ class Overview : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.sort_by_member -> {
-                viewModel.sortListByAllMember()
+                viewModel.sortListByAllMembers()
             }
             R.id.sort_by_day_grow -> {
                 viewModel.sortListByDayGrowMember()

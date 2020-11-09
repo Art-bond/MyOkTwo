@@ -19,13 +19,13 @@
     <data>
         <variable
             name="group"
-            type="ru.d3st.myoktwo.network.MyGroup" />
+            type="ru.d3st.myoktwo.domain.MyGroup" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#00BCD4">
+        android:background="#6100DDFF">
 
         <ImageView
             android:id="@+id/group_avatar"

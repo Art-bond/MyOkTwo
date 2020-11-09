@@ -30,7 +30,9 @@
     <string name="loading_json">loading JSON</string>
     <string name="profile_avatar">Profile Avatar</string>
     <string name="to_group">to Group</string>
-    <string name="load_list">List loading</string>
+    <string name="load_list">List Loading!</string>
+    <string name="list_loaded">List has been loaded!</string>
+
     <string name="group_list">User Group List</string>
     <string name="example_group_name">group name</string>
     <string name="today_stats">Today Stats:</string>
@@ -47,4 +49,5 @@
     <string name="loading_img">Loading</string>
     <string name="sort_by_day_grow">by Day Grow</string>
     <string name="sort_by_member">by Member</string>
+    <string name="profile_has_loaded">Profile has been loaded</string>
 </resources>

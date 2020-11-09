@@ -3,7 +3,7 @@ package ru.d3st.myoktwo.overview
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import ru.d3st.myoktwo.R
-import ru.d3st.myoktwo.network.MyGroup
+import ru.d3st.myoktwo.domain.MyGroup
 
 @BindingAdapter("setName")
 fun TextView.setGroupName(item: MyGroup) {

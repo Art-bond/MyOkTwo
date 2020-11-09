@@ -12,7 +12,9 @@ import org.json.JSONObject
 
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import ru.d3st.myoktwo.domain.*
 import ru.ok.android.sdk.*
+import timber.log.Timber
 import java.lang.Exception
 
 import java.lang.reflect.Type
@@ -47,7 +49,6 @@ object OkMyApi {
         )
     }
 
-    val mapCountGroup = mapOf("count" to "100")
 
 
     //подключаем Moshi
@@ -110,7 +111,7 @@ object OkMyApi {
 
                 return@withContext adapterGroupPostsMoshi.fromJson(json)!!
             } catch (e: Exception) {
-                Log.i("jsonGrPost", e.toString())
+                Timber.d(e.toString())
                 return@withContext emptyList<GroupPosts>().first()
             }
         }
@@ -128,12 +129,12 @@ object OkMyApi {
 
             try {
                 val json = ok.request(methodGroupGetInfo, mapGroupInfo, OkRequestMode.DEFAULT)
-                Log.i("jsonstats", json.toString())
+                Timber.d(json.toString())
 
 
                 return@withContext adapterGroupInfo.fromJson(json.toString())!!.first()
             } catch (e: Exception) {
-                Log.i("jsonGrInfo", e.toString())
+                Timber.d(e.toString())
                 return@withContext emptyList<GroupInfoItem>().first()
             }
         }
@@ -156,13 +157,13 @@ object OkMyApi {
             )
             try {
                 val json = ok.request("group.getStatTrends", mapGroupStat, OkRequestMode.DEFAULT)
-                Log.i("jsonStats", "для группы $groupId - $json")
+                Timber.d("для группы $groupId - $json")
                 val resultMoshi = adapterGroupStatsMoshi.fromJson(json.toString())
 
 
                 return@withContext resultMoshi!!
             } catch (e: Exception) {
-                Log.i("jsonErGrStat", "для группы $groupId $e")
+                Timber.i("для группы $groupId $e")
                 return@withContext emptyList<GroupStats>().first()
 
             }
@@ -181,6 +182,86 @@ object OkMyApi {
             )
         }
 
+    suspend fun getMyGroup(): NetworkMyGroupContainer {
+        //TODO переписать логику для получения списка сюда из OVerView
+        Timber.d("get my group is Ready")
+        val result = getUserGroupsData() // user group data class
+        val idGroups: List<GroupUser.Group> = getListGroupsId(result) // получаем список ID групп
+        val fillList: List<MyGroup> = getDataForMyGroups(idGroups) //заполняем класс MyGroup данными
+        val list: List<MyGroupNetwork> = fillList.map {
+            MyGroupNetwork(
+                groupId = it.groupId,
+                name = it.name,
+                membersCount = it.membersCount,
+                membersDiff = it.membersDiff,
+                picAvatar = it.picAvatar,
+                topicOpens = it.topicOpens
+            )
+        }
+        Timber.d("networkGroup ${list.size}}")
+        return NetworkMyGroupContainer(list)
+    }
+
+    // to run code in Background Thread
+    private suspend fun getUserGroupsData(): String =
+        withContext(Dispatchers.IO) {
+            val mapCountGroup = mapOf("count" to "100")
+            //TODO уместен ли тут Try Catch
+            try {
+                val result = ok.request("group.getUserGroupsV2",
+                    mapCountGroup,
+                    OkRequestMode.DEFAULT)!!
+                val json = JSONObject(result)
+                if (json.has("errorCode")) {
+                    //TODO вставить обработчик ошибок
+                }
+                return@withContext result
+            } catch (e: Exception) {
+                return@withContext "error group response $e"
+            }
+
+        }
+    suspend fun getListGroupsId(json: String): List<GroupUser.Group> =
+        withContext(Dispatchers.IO) {
+            //полученный результат пропускаем через Моши Адаптер
+            //TODO нужна проверка поступающего JSOn наличие данных или ошибки
+            val list = adapterGroupMoshi.fromJson(json)
+            if (list != null) {
+                return@withContext list.groups
+            }
+            return@withContext emptyList()
+        }
+    suspend fun getDataForMyGroups(idGroups: List<GroupUser.Group>): List<MyGroup> =
+        withContext(Dispatchers.IO) {
+            var resultList: List<MyGroup> = emptyList()
+            idGroups.forEach {
+                val id = it.groupId
+                val stats: GroupStats = getGroupStatToday(id)
+                val info: GroupInfoItem = getGroupInfo(it)
+                val posts: GroupPosts = getStatTopics(id)
+                val postCountToday = posts.topics.size
+
+                val name = info.name
+                val membersCount = info.membersCount
+                val picAvatar = info.picAvatar
+                val listMemberDiff = stats.membersDiff
+                var membersDiffToday: Int? = 0
+                if (listMemberDiff.isNotEmpty()) {
+                    membersDiffToday = stats.membersDiff.first()?.value
+                }
+                // val postToday =stats.topicOpens.first().value
+
+                val one =
+                    MyGroup(id, name, membersCount, picAvatar, membersDiffToday, postCountToday)
+                resultList = resultList + one
+
+
+                //Log.i("jsonstats", one.toString())
+
+            }
+            return@withContext resultList
+
+        }
 
 }
 

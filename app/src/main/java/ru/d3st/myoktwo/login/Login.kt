@@ -42,11 +42,11 @@ class Login : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
-        //бинды вдул
+
         _bind = LoginFragmentBinding.inflate(inflater, container, false)
         val application = requireNotNull(this.activity).application
         //следим за жизненым циклом фрагмента
-        var viewModel: LoginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        val viewModel: LoginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
         bind.loginData = viewModel
         bind.lifecycleOwner = this
 
@@ -156,8 +156,8 @@ class Login : Fragment() {
                     ContextOkListener(this.requireContext(),
                         onSuccess = { _, json ->
                             try {
-                                toast(String.format("access_token: %s",
-                                    json.getString("access_token")))
+/*                                toast(String.format("access_token: %s",
+                                    json.getString("access_token")))*/
                                 //showAppData()
                                 navigateToProfile(json)
                             } catch (e: JSONException) {
@@ -191,7 +191,7 @@ class Login : Fragment() {
         val action =
             LoginDirections
                 .actionLoginToProfile()
-        action.jsonProfile = json.toString()
+        //action.jsonProfile = json.toString()
         //находим ФиндКонтроллер и запускаем действие
         view?.findNavController()?.navigate(action)
     }

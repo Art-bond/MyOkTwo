@@ -1,25 +1,34 @@
 package ru.d3st.myoktwo.overview
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
-import org.json.JSONObject
-import ru.d3st.myoktwo.network.*
-import ru.d3st.myoktwo.network.OkMyApi.getGroupInfo
-import ru.d3st.myoktwo.network.OkMyApi.getGroupStatToday
-import ru.d3st.myoktwo.network.OkMyApi.getStatTopics
-import ru.ok.android.sdk.OkRequestMode
+import ru.d3st.myoktwo.databse.getDatabase
+import ru.d3st.myoktwo.domain.MyGroup
+import ru.d3st.myoktwo.repository.GroupsRepository
+import ru.d3st.myoktwo.repository.Sort
+import timber.log.Timber
 import java.lang.Exception
 
 enum class JsonStatus { LOADING, ERROR, DONE }
 
 class OverviewViewModel(application: Application) : AndroidViewModel(application) {
 
+    /**
+     * The data source this ViewModel will fetch results from.
+     */
+    private val dataBase = getDatabase(application)
+    private val groupsRepository = GroupsRepository(dataBase)
+    private val groups = groupsRepository.groups
+
+
+
+
     //Сбор информации для заполнения полей листа групп пользоватея
-    private val _groupOne = MutableLiveData<List<MyGroup>>()
+    private var _groupOne = MutableLiveData<List<MyGroup>>()
     val groupOne: LiveData<List<MyGroup>>
         get() = _groupOne
+
 
     private val _navigateToSelectedProperty = MutableLiveData<MyGroup>()
     val navigateToSelectedProperty: LiveData<MyGroup>
@@ -30,15 +39,6 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
     val status: LiveData<JsonStatus>
         get() = _status
 
-    //загрузка данных в процентах
-    private val _progress = MutableLiveData<Int>()
-    val progress: LiveData<Int>
-        get() = _progress
-
-    private val _maxProgress = MutableLiveData<Int>()
-    val maxProgress: LiveData<Int>
-        get() = _maxProgress
-
 
     init {
         execute()
@@ -46,90 +46,43 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
 
     private fun execute() = viewModelScope.launch {
 
-        onPreExecute()
-        val result = doInBackground() // runs in background thread without blocking the Main Thread
-        val idGroups: List<GroupUser.Group> = getListGroup(result) // получаем список ID групп
-        //Log.e("json2", idGroups.toString())
-        val fillList: List<MyGroup> = getMyGroupList(idGroups) //заполняем класс MyGroup данными
-        //Log.e("json3", fillList.toString())
-        onPostExecute(fillList)// переносим данные в RecyclerView
+        onPreExecute() //операции до фонового получения данных
+        try {
+            groupsRepository.refreshGroups()
+            Timber.i("get list from repository is done and list")
+            onPostExecute()
+
+
+        } catch (e: Exception) {
+            Timber.d("exception getRepository is $e")
+        }
     }
 
-    private suspend fun getMyGroupList(idGroups: List<GroupUser.Group>): List<MyGroup> =
-        withContext(Dispatchers.IO) {
-            var resultList: List<MyGroup> = emptyList()
-            idGroups.forEach {
-                val id = it.groupId
-                val stats: GroupStats = getGroupStatToday(id)
-                val info: GroupInfoItem = getGroupInfo(it)
-                val posts: GroupPosts = getStatTopics(id)
-                val postCountToday = posts.topics.size
-
-                val name = info.name
-                val membersCount = info.membersCount
-                val picAvatar = info.picAvatar
-                val listMemberDiff = stats.membersDiff
-                var membersDiffToday: Int? = 0
-                if (listMemberDiff.isNotEmpty()) {
-                    membersDiffToday = stats.membersDiff.first()?.value
+    private suspend fun transferDataToMyGroupOne(groups: LiveData<List<MyGroup>>):List<MyGroup> =
+            withContext(Dispatchers.IO){
+                try {
+                    return@withContext groups.value!!
+                }catch (e:Exception){
+                    Timber.e("happening erorr $e")
+                    return@withContext emptyList()
                 }
-                // val postToday =stats.topicOpens.first().value
-
-                val one =
-                    MyGroup(id, name, membersCount, picAvatar, membersDiffToday, postCountToday)
-                resultList = resultList + one
-                Log.i("jsonProgress", _progress.value.toString())
-
-
-                //Log.i("jsonstats", one.toString())
-
             }
-            return@withContext resultList
 
-        }
-
-
-    private suspend fun getListGroup(json: String): List<GroupUser.Group> =
-        withContext(Dispatchers.IO) {
-            //полученный результат пропускаем через Моши Адаптер
-            //TODO нужна проверка поступающего JSOn наличие данных или ошибки
-            val list = OkMyApi.adapterGroupMoshi.fromJson(json)
-            if (list != null) {
-                return@withContext list.groups
-            }
-            return@withContext emptyList()
-        }
 
     // Runs on the Main(UI) Thread
     private fun onPreExecute() {
         // show progress
+        _groupOne = groups as MutableLiveData<List<MyGroup>>
         _status.value = JsonStatus.LOADING
+        Timber.d("onPreExecute is done and ${status.value}")
     }
 
-    private suspend fun doInBackground(): String =
-        withContext(Dispatchers.IO) {    // to run code in Background Thread
-            try {
-                val result = OkMyApi.ok.request("group.getUserGroupsV2",
-                    OkMyApi.mapCountGroup,
-                    OkRequestMode.DEFAULT)!!
-                val json = JSONObject(result)
-                if (json.has("errorCode")) {
-                    _status.value = JsonStatus.ERROR
-
-                }
-                return@withContext result
-            } catch (e: Exception) {
-                _status.value = JsonStatus.ERROR
-                return@withContext "error group response $e"
-            }
-
-        }
 
     // Runs on the Main(UI) Thread
-    private fun onPostExecute(result: List<MyGroup>) {
+    private fun onPostExecute() {
         // hide progress
-        _groupOne.value = result
         _status.value = JsonStatus.DONE
+        Timber.d("Post execute is done and containts ${_groupOne.value?.size} elements")
     }
 
     fun displaySelectedGroup(group: MyGroup) {
@@ -140,15 +93,29 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
         _navigateToSelectedProperty.value = null
     }
 
-    fun sortListByAllMember() {
-        val sortedList = _groupOne.value?.sortedByDescending { it.membersCount }
-        _groupOne.value = sortedList
+    //сортировка групп по численности подписчиков
+    fun sortListByAllMembers() {
+        viewModelScope.launch {
+            val sortedList = _groupOne.value?.sortedByDescending { it.membersCount }
+            _groupOne.value = sortedList
+
+            //select * from mygroupdb order by membersCount desc
+            //groupsRepository.sortBy(Sort.dayGrow)
+        }
 
     }
 
+    // сортировка групп по росту за день
     fun sortListByDayGrowMember() {
-        val sortedList = _groupOne.value?.sortedByDescending { it.membersDiff }
-        _groupOne.value = sortedList
+        viewModelScope.launch {
+            val sortedList = _groupOne.value?.sortedByDescending { it.membersDiff }
+            _groupOne.value = sortedList
+
+            //groupsRepository.sortBy(Sort.member)
+        }
+    }
+
+    fun refreshDataFromNetwork() {
 
     }
 }

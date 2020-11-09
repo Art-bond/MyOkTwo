@@ -14,6 +14,7 @@ import ru.d3st.myoktwo.network.OkMyApi.ok
 import ru.d3st.myoktwo.network.OkMyApi.adapterMoshiUser
 
 import ru.ok.android.sdk.OkRequestMode
+import timber.log.Timber
 
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
@@ -42,6 +43,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     val avatarUser: LiveData<String>
         get() = _avatarUser
 
+    //показ SnackBar
+    private var _showSnackbarEvent = MutableLiveData<Boolean>()
+
+    /**
+     * If this is true, immediately `show()` a toast and call `doneShowingSnackbar()`.
+     */
+    val showSnackBarEvent: LiveData<Boolean>
+        get() = _showSnackbarEvent
+
 
     init {
         execute()
@@ -56,12 +66,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private suspend fun doInBackground(): String =
         withContext(Dispatchers.IO) { // to run code in Background Thread
             // do async work
-            Log.i("json", "")
             try {
                 val result = ok.request("users.getCurrentUser", null, OkRequestMode.DEFAULT)
                 return@withContext result.toString()
             } catch (exc: java.lang.Exception) {
-                Log.e("jsonExp", "Failed to get current user info", exc)
+                Timber.d("Failed to get current user info $exc")
             }
             //delay(1000) // simulate async work
             return@withContext "Failed to get current user info"
@@ -80,10 +89,18 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         moshiUser?.let {
             _response.value = moshiUser.toString()
             _oneName.value = "${moshiUser.firstName} ${moshiUser.lastName}"
-            _ageUser.value = "Age: " + moshiUser.age
-            _cityUser.value = "City: " + moshiUser.location.city
+            _ageUser.value = "Age: ${moshiUser.age}"
+            _cityUser.value = "City: ${moshiUser.location.city}"
             _avatarUser.value = moshiUser.pic2
+
+            //показ сообщения о выполнении операции
+            _showSnackbarEvent.value = true
         }
+    }
+
+    //сброс состояни SnackBar
+    fun doneShowingSnackbar() {
+        _showSnackbarEvent.value = false
     }
 
 }

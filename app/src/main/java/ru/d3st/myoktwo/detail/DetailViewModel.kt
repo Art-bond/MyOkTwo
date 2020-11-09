@@ -12,13 +12,13 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import ru.d3st.myoktwo.network.MyGroup
+import ru.d3st.myoktwo.domain.MyGroup
 import ru.d3st.myoktwo.network.OkMyApi
 import ru.ok.android.sdk.OkListener
-import kotlin.math.sign
+import timber.log.Timber
 
 
-class DetailViewModel(selectedMyGroup: MyGroup, application: Application) : ViewModel() {
+class DetailViewModel(selectedMyGroup: MyGroup) : ViewModel() {
 
     private val _groupData = MutableLiveData<MyGroup>()
     val groupData: LiveData<MyGroup>
@@ -58,7 +58,7 @@ class DetailViewModel(selectedMyGroup: MyGroup, application: Application) : View
         }
     }
 
-    private fun postExecute(barGraphData: BarData) {
+   private fun postExecute(barGraphData: BarData) {
         //Log.i("jsonBarPost", _barGraph.value.toString())
 
 
@@ -71,7 +71,7 @@ class DetailViewModel(selectedMyGroup: MyGroup, application: Application) : View
 
 
         if (moshi != null) {
-            Log.i("jsonRef", moshi.references.toString())
+            Timber.i(moshi.references.toString())
 /*              Reference(name=FEED, value=85, percentage=54.5),
                 Reference(name=SEARCH, value=1, percentage=0.7),
                 Reference(name=RECOMMENDATION, value=16, percentage=10.3),
@@ -101,7 +101,6 @@ class DetailViewModel(selectedMyGroup: MyGroup, application: Application) : View
             dataBarGraph.setValueTextSize(14f)
             _barGraph.value = dataBarGraph
 
-            Log.i("jsonBar3", dataBarGraph.toString())
             barDataSet.setColors(ColorTemplate.COLORFUL_COLORS)
             barDataSet.barSpacePercent
             //chart.setData(data)

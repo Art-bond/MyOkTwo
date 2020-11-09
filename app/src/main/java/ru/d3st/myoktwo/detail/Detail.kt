@@ -6,15 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.marginRight
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import com.github.mikephil.charting.components.XAxis.XAxisPosition
-import com.github.mikephil.charting.renderer.XAxisRenderer
 import ru.d3st.myoktwo.databinding.DetailFragmentBinding
-import ru.d3st.myoktwo.network.MyGroup
-import ru.d3st.myoktwo.profile.setBarGraph
+import timber.log.Timber
 
 class Detail : Fragment() {
 
@@ -41,7 +36,7 @@ class Detail : Fragment() {
 
         viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
         viewModel.barGraph.observe(viewLifecycleOwner, {
-            Log.i("jsonRefresult", it.toString())
+            Timber.i(it.toString())
             it?.let {
                 bind.barChartRef.data = it
                 val mChart = bind.barChartRef
@@ -77,7 +72,7 @@ class Detail : Fragment() {
 
 
                 bind.barChartRef.invalidate()
-                Log.i("jsonRefBind", bind.barChartRef.toString())
+                Timber.i(bind.barChartRef.toString())
 
             }
         })

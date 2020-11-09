@@ -18,9 +18,10 @@
         android:layout_marginStart="@dimen/margin_one"
         android:layout_marginTop="@dimen/margin_one"
         android:layout_marginEnd="@dimen/margin_one"
+        android:fontFamily="@font/roboto"
         android:hint="@string/name_hint"
-        android:textSize="18sp"
         android:text="@{profileViewModelData.oneName}"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,6 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_one"
+        android:fontFamily="@font/roboto"
         android:hint="@string/age_hint"
         android:text="@{profileViewModelData.ageUser}"
         android:textSize="18sp"
@@ -53,16 +55,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_one"
+        android:fontFamily="@font/roboto"
         android:hint="@string/city_hint"
+        android:scrollHorizontally="false"
+        android:singleLine="false"
         android:text="@{profileViewModelData.cityUser}"
         android:textSize="18sp"
-        android:singleLine="false"
-        android:scrollHorizontally="false"
         app:layout_constraintEnd_toEndOf="@+id/name_profile"
         app:layout_constraintStart_toStartOf="@+id/age_profile"
         app:layout_constraintTop_toBottomOf="@+id/age_profile" />
 
-    <TextView
+<!--    <TextView
         android:id="@+id/json_profile"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -75,16 +78,18 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_to_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />-->
 
     <Button
         android:id="@+id/btn_to_group"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_one"
+        android:layout_marginBottom="@dimen/margin_three"
         android:text="@string/to_group"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

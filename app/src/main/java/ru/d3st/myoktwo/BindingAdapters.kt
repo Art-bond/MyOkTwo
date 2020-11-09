@@ -7,8 +7,6 @@ import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import ru.d3st.myoktwo.network.MyGroup
-import ru.d3st.myoktwo.overview.GroupListAdapter
 import ru.d3st.myoktwo.overview.JsonStatus
 
 @BindingAdapter("imageUrl")

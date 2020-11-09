@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.d3st.myoktwo.databinding.ListItemGroupBinding
 
-import ru.d3st.myoktwo.network.MyGroup
+import ru.d3st.myoktwo.domain.MyGroup
 
-class GroupListAdapter(val onClickListener: OnClickListener) :
+class GroupListAdapter(private val onClickListener: OnClickListener) :
     ListAdapter<MyGroup, GroupListAdapter.ViewHolder>(GroupListDiffCallback()) {
 
 
@@ -41,7 +41,7 @@ class GroupListAdapter(val onClickListener: OnClickListener) :
             }
         }
     }
-
+    //обработка клика в списке
     class OnClickListener(val clickListener: (group: MyGroup) -> Unit) {
         fun onClick(group: MyGroup) = clickListener(group)
     }

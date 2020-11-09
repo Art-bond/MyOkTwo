@@ -1,9 +1,11 @@
-package ru.d3st.myoktwo.network
+package ru.d3st.myoktwo.domain
 
 import android.os.Parcelable
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 //класс для занесения данных
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class MyGroup(
     val groupId: String, // ID группы

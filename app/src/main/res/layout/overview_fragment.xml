@@ -13,6 +13,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#5603DAC5"
+        android:hapticFeedbackEnabled="true"
         tools:context=".MainActivity">
 
         <TextView
@@ -22,8 +24,12 @@
             android:layout_marginStart="@dimen/margin_one"
             android:layout_marginTop="@dimen/margin_one"
             android:layout_marginEnd="@dimen/margin_one"
+            android:layout_marginBottom="@dimen/margin_one"
+            android:gravity="center_horizontal"
             android:text="@string/group_list"
-            android:textSize="18sp"
+            android:textColor="#673AB7"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/recycler_view_group"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -39,16 +45,16 @@
             app:layout_constraintTop_toBottomOf="@+id/txtv_group"
             app:layout_constraintVertical_bias="0.0" />
 
-        <ProgressBar
+        <!--        <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:loading="@{listGroupDataViewModel.status}"
             app:layout_constraintBottom_toBottomOf="@+id/recycler_view_group"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:loading="@{listGroupDataViewModel.status}" />-->
 
         <!--        <ImageView
                     android:id="@+id/status_image"
@@ -61,8 +67,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:listLoadingStatus="@{listGroupDataViewModel.status}"
                     app:srcCompat="@drawable/loading_animation" />-->
-
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

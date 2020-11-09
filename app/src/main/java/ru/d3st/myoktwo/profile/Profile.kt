@@ -5,6 +5,8 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.google.android.material.snackbar.Snackbar
+import ru.d3st.myoktwo.R
 import ru.d3st.myoktwo.databinding.ProfileFragmentBinding
 
 class Profile : Fragment() {
@@ -17,13 +19,24 @@ class Profile : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         val bind = ProfileFragmentBinding.inflate(inflater, container, false)
-        arguments?.let {
+/*        arguments?.let {
             bind.jsonProfile.text = ProfileArgs.fromBundle(it).jsonProfile
-        }
+        }*/
         viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
         bind.lifecycleOwner = this
         bind.profileViewModelData = viewModel
+
+        viewModel.showSnackBarEvent.observe(viewLifecycleOwner, {
+            if (it == true) { //если данные профиля загрузились покажет SnackBar
+                Snackbar.make(
+                    activity!!.findViewById(android.R.id.content),
+                    getString(R.string.profile_has_loaded),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+                viewModel.doneShowingSnackbar()
+            }
+        })
 
         bind.btnToGroup.setOnClickListener {
             navigateToGroupList()
@@ -34,7 +47,8 @@ class Profile : Fragment() {
 
 
     private fun navigateToGroupList() {
-        //действие
+
+        //переход к списку групп
         val action =
             ProfileDirections.actionProfileToOverview()
 
