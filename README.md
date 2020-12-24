@@ -15,7 +15,8 @@ Application for group administrators on the Odnoklassniki social network
 7. Repository
 8. WorkManager
 
-RecyclerView 
+RecyclerView
+
 ![alt text](https://github.com/Art-bond/okRes/blob/main/ok1.png)
 
 Фрагемент детальной информации
