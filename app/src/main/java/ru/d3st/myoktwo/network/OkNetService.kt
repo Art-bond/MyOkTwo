@@ -1,7 +1,6 @@
 package ru.d3st.myoktwo.network
 
 import android.app.Application
-import android.util.Log
 
 import android.widget.Toast
 import com.squareup.moshi.*
@@ -10,8 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import ru.d3st.myoktwo.domain.*
 import ru.ok.android.sdk.*
 import timber.log.Timber
@@ -29,10 +26,10 @@ private const val REDIRECT_URL = "okauth://ok1265589504"
 private const val BASE_URL =
     "https://api.ok.ru/fb.do"
 
-private val retrofit = Retrofit.Builder()
+/*private val retrofit = Retrofit.Builder()
     .addConverterFactory(ScalarsConverterFactory.create())
     .baseUrl(BASE_URL)
-    .build()
+    .build()*/
 
 val applicationKey = "application_key=$APP_KEY"
 val format = "format=json"
@@ -109,7 +106,7 @@ object OkMyApi {
             try {
                 val json = ok.request(method, mapGroupPosts, OkRequestMode.DEFAULT)
 
-                return@withContext adapterGroupPostsMoshi.fromJson(json)!!
+                return@withContext adapterGroupPostsMoshi.fromJson(json.toString())!!
             } catch (e: Exception) {
                 Timber.d(e.toString())
                 return@withContext emptyList<GroupPosts>().first()

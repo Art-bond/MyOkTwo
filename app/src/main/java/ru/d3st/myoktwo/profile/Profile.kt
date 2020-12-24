@@ -17,7 +17,7 @@ class Profile : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         val bind = ProfileFragmentBinding.inflate(inflater, container, false)
 /*        arguments?.let {
             bind.jsonProfile.text = ProfileArgs.fromBundle(it).jsonProfile
@@ -47,11 +47,9 @@ class Profile : Fragment() {
 
 
     private fun navigateToGroupList() {
-
         //переход к списку групп
         val action =
             ProfileDirections.actionProfileToOverview()
-
         view?.findNavController()?.navigate(action)
     }
 }

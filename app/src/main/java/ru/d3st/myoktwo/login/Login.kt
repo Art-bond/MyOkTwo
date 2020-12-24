@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.login_fragment.*
 import org.json.JSONException
-import org.json.JSONObject
 import ru.d3st.myoktwo.R
 import ru.d3st.myoktwo.databinding.LoginFragmentBinding
 import ru.d3st.myoktwo.network.OkMyApi
@@ -40,7 +39,7 @@ class Login : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
 
 
         _bind = LoginFragmentBinding.inflate(inflater, container, false)
@@ -58,7 +57,8 @@ class Login : Fragment() {
             activity?.let { One ->
                 OkMyApi.ok.requestAuthorization(
                     One,
-                    REDIRECT_URL, OkAuthType.ANY, OkScope.VALUABLE_ACCESS)
+                    REDIRECT_URL, OkAuthType.ANY, OkScope.VALUABLE_ACCESS
+                )
             }
             val intent = Intent(activity, OkAuthActivity::class.java)
             intent.putExtra(PARAM_CLIENT_ID, APP_ID)
@@ -70,16 +70,20 @@ class Login : Fragment() {
         }
 // NOTE: application should use just one of the login methods, ANY is preferable
         bind.sdkLoginSso.setOnClickListener {
-            OkMyApi.ok.requestAuthorization(requireActivity(),
+            OkMyApi.ok.requestAuthorization(
+                requireActivity(),
                 REDIRECT_URL,
                 OkAuthType.NATIVE_SSO,
-                OkScope.VALUABLE_ACCESS)
+                OkScope.VALUABLE_ACCESS
+            )
         }
         bind.sdkLoginOauth.setOnClickListener {
-            OkMyApi.ok.requestAuthorization(requireActivity(),
+            OkMyApi.ok.requestAuthorization(
+                requireActivity(),
                 REDIRECT_URL,
                 OkAuthType.WEBVIEW_OAUTH,
-                OkScope.VALUABLE_ACCESS)
+                OkScope.VALUABLE_ACCESS
+            )
         }
 
         bind.sdkGetCurrentuser.setOnClickListener {
@@ -117,13 +121,17 @@ class Login : Fragment() {
         }
         bind.sdkAppInvite.setOnClickListener { OkMyApi.ok.performAppInvite(this.requireActivity()) }
         bind.sdkAppSuggest.setOnClickListener {
-            OkMyApi.ok.performAppSuggest(this.requireActivity(),
-                null)
+            OkMyApi.ok.performAppSuggest(
+                this.requireActivity(),
+                null
+            )
         }
         bind.sdkReportPayment.setOnClickListener {
-            OkMyApi.ok.reportPayment(Math.random().toString() + "",
+            OkMyApi.ok.reportPayment(
+                Math.random().toString() + "",
                 "6.28",
-                Currency.getInstance("EUR"))
+                Currency.getInstance("EUR")
+            )
         }
 
         OkMyApi.ok = OkMyApi.getOk(application)
@@ -142,8 +150,8 @@ class Login : Fragment() {
     }
 
     private fun showAppData(loggedIn: Boolean = true) {
-        //sdk_form.visibility = if (loggedIn) VISIBLE else GONE
-        //login_block.visibility = if (loggedIn) GONE else VISIBLE
+/*        sdk_form.visibility = if (loggedIn) VISIBLE else GONE
+        login_block.visibility = if (loggedIn) GONE else VISIBLE*/
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -159,7 +167,7 @@ class Login : Fragment() {
 /*                                toast(String.format("access_token: %s",
                                     json.getString("access_token")))*/
                                 //showAppData()
-                                navigateToProfile(json)
+                                navigateToProfile()
                             } catch (e: JSONException) {
                                 toast("unable to parse login request ${e.message}")
                             }
@@ -185,7 +193,7 @@ class Login : Fragment() {
         }
     }
 
-    private fun navigateToProfile(json: JSONObject) {
+    private fun navigateToProfile() {
         //создаем действие перехода на другой фрагмент
 
         val action =

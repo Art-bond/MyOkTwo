@@ -24,7 +24,7 @@ class OverviewViewModel(application: Application) : AndroidViewModel(application
 
 
 
-    //Сбор информации для заполнения полей листа групп пользоватея
+    //Сбор информации для заполнения полей списка групп пользоватея
     private var _groupOne = MutableLiveData<List<MyGroup>>()
     val groupOne: LiveData<List<MyGroup>>
         get() = _groupOne

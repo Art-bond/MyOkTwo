@@ -50,7 +50,7 @@ class MainApplication: Application() {
             PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.DAYS).build()*/
 
         val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(
-            15, TimeUnit.MINUTES)
+            60, TimeUnit.MINUTES)
             .setConstraints(constraints) //устанавливаем ограничения
             .build()
 

@@ -18,7 +18,7 @@ class Detail : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
 
         val bind = DetailFragmentBinding.inflate(inflater, container, false)
         //через фрагмент получаем доступ к приложению
@@ -28,13 +28,13 @@ class Detail : Fragment() {
         //создаем экземпляр ViewModelFactory, для того чтобы поместить данные из предыдущего фрагмента в ВьюМодел этого фрагмента
         val viewModelFactory = DetailViewModelFactory(selectedMyGroup, application)
         //биндим ВМ
-        bind.detailDataViewModel =
-            ViewModelProvider(this, viewModelFactory).get(DetailViewModel::class.java)
+        viewModel = ViewModelProvider(this,  viewModelFactory).get(DetailViewModel::class.java)
+
+        bind.detailDataViewModel = viewModel
         //для обновления экрана
         bind.lifecycleOwner = this
 
 
-        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
         viewModel.barGraph.observe(viewLifecycleOwner, {
             Timber.i(it.toString())
             it?.let {

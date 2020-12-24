@@ -41,6 +41,7 @@ class GroupListAdapter(private val onClickListener: OnClickListener) :
             }
         }
     }
+
     //обработка клика в списке
     class OnClickListener(val clickListener: (group: MyGroup) -> Unit) {
         fun onClick(group: MyGroup) = clickListener(group)
