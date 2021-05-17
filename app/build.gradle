@@ -6,7 +6,7 @@ apply plugin: "androidx.navigation.safeargs"
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
 
     defaultConfig {
@@ -27,6 +27,23 @@ android {
     }
     buildFeatures {
         dataBinding true
+    }
+    buildTypes.each{
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+        def appID = properties.getProperty("APP_ID","")
+        def appKey = properties.getProperty("APP_KEY","")
+        def redirectUrl = properties.getProperty("REDIRECT_URL","")
+
+        it.buildConfigField 'String', "APP_ID", appID
+        it.resValue 'string', "APP_ID", appID
+
+        it.buildConfigField 'String', "APP_KEY", appKey
+        it.resValue 'string', "APP_KEY", appKey
+
+        it.buildConfigField 'String', "REDIRECT_URL", redirectUrl
+        it.resValue 'string', "REDIRECT_URL", redirectUrl
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

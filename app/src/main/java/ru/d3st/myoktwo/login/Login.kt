@@ -2,16 +2,15 @@ package ru.d3st.myoktwo.login
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.*
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import kotlinx.android.synthetic.main.login_fragment.*
 import org.json.JSONException
+import ru.d3st.myoktwo.BuildConfig.*
 import ru.d3st.myoktwo.R
 import ru.d3st.myoktwo.databinding.LoginFragmentBinding
 import ru.d3st.myoktwo.network.OkMyApi
@@ -20,11 +19,6 @@ import ru.ok.android.sdk.util.OkAuthType
 import ru.ok.android.sdk.util.OkScope
 import java.util.*
 
-// -------------- YOUR APP DATA GOES HERE ------------
-private const val APP_ID = "1265589504"
-private const val APP_KEY = "CBAOFQGMEBABABABA"
-private const val REDIRECT_URL = "okauth://ok1265589504"
-// -------------- YOUR APP DATA ENDS -----------------
 
 class Login : Fragment() {
 

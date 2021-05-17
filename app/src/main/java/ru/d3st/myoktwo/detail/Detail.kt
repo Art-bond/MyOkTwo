@@ -1,11 +1,10 @@
 package ru.d3st.myoktwo.detail
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.components.XAxis.XAxisPosition
 import ru.d3st.myoktwo.databinding.DetailFragmentBinding
@@ -28,7 +27,7 @@ class Detail : Fragment() {
         //создаем экземпляр ViewModelFactory, для того чтобы поместить данные из предыдущего фрагмента в ВьюМодел этого фрагмента
         val viewModelFactory = DetailViewModelFactory(selectedMyGroup, application)
         //биндим ВМ
-        viewModel = ViewModelProvider(this,  viewModelFactory).get(DetailViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(DetailViewModel::class.java)
 
         bind.detailDataViewModel = viewModel
         //для обновления экрана

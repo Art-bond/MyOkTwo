@@ -1,39 +1,22 @@
 package ru.d3st.myoktwo.network
 
 import android.app.Application
-
 import android.widget.Toast
 import com.squareup.moshi.*
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-
+import ru.d3st.myoktwo.BuildConfig.APP_ID
+import ru.d3st.myoktwo.BuildConfig.APP_KEY
 import ru.d3st.myoktwo.domain.*
 import ru.ok.android.sdk.*
 import timber.log.Timber
-import java.lang.Exception
-
 import java.lang.reflect.Type
-
-
-// -------------- YOUR APP DATA GOES HERE ------------
-private const val APP_ID = "1265589504"
-private const val APP_KEY = "CBAOFQGMEBABABABA"
-private const val REDIRECT_URL = "okauth://ok1265589504"
-// -------------- YOUR APP DATA ENDS -----------------
 
 private const val BASE_URL =
     "https://api.ok.ru/fb.do"
 
-/*private val retrofit = Retrofit.Builder()
-    .addConverterFactory(ScalarsConverterFactory.create())
-    .baseUrl(BASE_URL)
-    .build()*/
-
-val applicationKey = "application_key=$APP_KEY"
-val format = "format=json"
-val method = "method=users.getCurrentUser"
 
 object OkMyApi {
     lateinit var ok: Odnoklassniki

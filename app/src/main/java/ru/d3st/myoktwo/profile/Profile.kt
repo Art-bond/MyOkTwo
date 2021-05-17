@@ -1,7 +1,9 @@
 package ru.d3st.myoktwo.profile
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -29,11 +31,7 @@ class Profile : Fragment() {
 
         viewModel.showSnackBarEvent.observe(viewLifecycleOwner, {
             if (it == true) { //если данные профиля загрузились покажет SnackBar
-                Snackbar.make(
-                    activity!!.findViewById(android.R.id.content),
-                    getString(R.string.profile_has_loaded),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                showSnackBar()
                 viewModel.doneShowingSnackbar()
             }
         })
@@ -43,6 +41,14 @@ class Profile : Fragment() {
         }
 
         return bind.root
+    }
+
+    private fun showSnackBar() {
+        Snackbar.make(
+            activity!!.findViewById(android.R.id.content),
+            getString(R.string.profile_has_loaded),
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
 
